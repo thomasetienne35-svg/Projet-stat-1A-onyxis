@@ -10,3 +10,11 @@ donnees <- readRDS("stu_qqq.rds")
 ```{r}
 str(donnees)
 ```
+
+```{r}
+variables_final <- data.frame()
+```
+
+```{r}
+variables_final <- data.frame(ST347Q01JA = donnees$ST347Q01JA)
+```
