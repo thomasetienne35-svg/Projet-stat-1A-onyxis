@@ -6,10 +6,6 @@ format: html
 # Library
 
 ```{r}
-install.packages(c("FactoMineR", "factoextra"))
-
-library(FactoMineR)
-library(factoextra)
 library(ggplot2)
 library(dplyr)
 library(scales)
@@ -63,6 +59,7 @@ variables_final <- data.frame(ST347Q01JA = donnees$ST347Q01JA, #ordi
                               ST327Q05JA = donnees$ST327Q05JA, #prévu de complèter ISCED 5
                               ST327Q06JA = donnees$ST327Q06JA, #prévu de complèter ISCED 6
                               ST327Q07JA = donnees$ST327Q07JA, #prévu de complèter ISCED 7
+                              
                               ST327Q08JA = donnees$ST327Q08JA, #prévu de complèter ISCED 8
                               ST324Q02JA = donnees$ST324Q02JA, # crainte de ne pas être prêt pour la vie après la dernière année d’enseignement obligatoire
                               ST347Q01JA = donnees$ST347Q01JA, #fermeture à cause du Convid-19
@@ -75,9 +72,14 @@ variables_final <- data.frame(ST347Q01JA = donnees$ST347Q01JA, #ordi
                               ST348Q06JA = donnees$ST348Q06JA, #quelqu'un de ton ecole t’a demandé de remettre tes travaux scolaires terminés
                               ST348Q07JA = donnees$ST348Q07JA, #quelqu'un de ton ecole t’a donné des conseils utiles pour étudier par toi‑même
                               ST348Q08JA = donnees$ST348Q08JA,  #quelqu'un de ton ecole a pris de tes nouvelles pour savoir comment tu te sentais
-                              ST349Q01JA = donnees$ST349Q01JA, # appareil numérique le plus utilisé pour le travail scolaire REPONSE CHOIX MULTIPLE
-                              ST350Q01JA = donnees$ST350Q01JA, # apprentissage pendant fermeture : moins qu'en présentiel REPONSE CHOIX MULTIPLE
-                              
+                              ST349Q01JA = donnees$ST349Q01JA, # appareil numérique le plus utilisé pour le travail scolaire (ordinateur, smartphone, appareil partagé, prêté, aucun)
+                              #ST349Q02JA = donnees$ST349Q02JA, # appareil numérique le plus utilisé pour le travail scolaire (ordinateur)
+                              #ST349Q03JA = donnees$ST349Q03JA, # appareil numérique le plus utilisé pour le travail scolaire (smartphone)
+                              #ST349Q04JA = donnees$ST349Q04JA, # appareil numérique le plus utilisé pour le travail scolaire (appareil partagé)
+                              #ST349Q05JA = donnees$ST349Q05JA, # appareil numérique le plus utilisé pour le travail scolaire (appareil prêté ou donné par l'école)
+                              #ST350Q01JA = donnees$ST350Q01JA, # apprentissage pendant fermeture : moins qu'en présentiel
+                              #ST350Q02JA = donnees$ST350Q02JA, # apprentissage pendant fermeture : autant qu'en présentiel
+                              #ST350Q03JA = donnees$ST350Q03JA, # apprentissage pendant fermeture : plus qu'en présentiel
                               ST351Q01JA = donnees$ST351Q01JA, # utilisation de manuels et feuilles papier
                               ST351Q02JA = donnees$ST351Q02JA, # utilisation de manuels et supports numériques
                               ST351Q03JA = donnees$ST351Q03JA, # cours en direct par un enseignant (visioconférence)
@@ -112,7 +114,10 @@ variables_final <- data.frame(ST347Q01JA = donnees$ST347Q01JA, #ordi
                               ST354Q08JA = donnees$ST354Q08JA, # enseignants bien préparés pour l’enseignement à distance
                               ST354Q09JA = donnees$ST354Q09JA, # préparation pour apprendre seul
                               ST354Q10JA = donnees$ST354Q10JA, # manque des activités sportives scolaires
-                              ST356Q01JA = donnees$ST356Q01JA, # sentiment de préparation pour apprendre seul si fermeture prolongée dans le futur REPONSE CHOIX MULTIPLE
+                              #ST356Q01JA = donnees$ST356Q01JA, # sentiment de préparation pour apprendre seul si fermeture prolongée dans le futur (pas du tout préparé)
+                              #ST356Q02JA = donnees$ST356Q02JA, # sentiment de préparation pour apprendre seul si fermeture prolongée dans le futur (pas vraiment préparé)
+                              #ST356Q03JA = donnees$ST356Q03JA, # sentiment de préparation pour apprendre seul si fermeture prolongée dans le futur (bien préparé)
+                              #ST356Q04JA = donnees$ST356Q04JA, # sentiment de préparation pour apprendre seul si fermeture prolongée dans le futur (très bien préparé)
                               ST331Q01JA = donnees$ST331Q01JA, # effort fourni pour réussir le test PISA
                               ST331Q02JA = donnees$ST331Q02JA, # effort qui aurait été fourni si le test comptait pour les notes scolaires
                               ST331Q03JA = donnees$ST331Q03JA, # effort fourni pour répondre correctement au questionnaire
@@ -170,7 +175,6 @@ ggplot(donnees_graph, aes(x = Fermeture, y = Pourcentage, fill = Apprentissage))
   labs(
     title = "Impact de la fermeture des écoles sur l'apprentissage",
     subtitle = "Perception des élèves comparée aux cours en présentiel",
-    caption = stringr::str_wrap("Note de lecture: Dans les écoles qui on été fermées durant  moins d'un mois dû au covid, 56% pourcent des élèves considère avoir moins appris que en présentiel, 33% autant et 11% mieux.", width = 100),
     x = NULL, # On enlève le titre X car les labels "1-3 mois" sont explicites
     y = NULL, # On enlève le titre Y car les % sont explicites
     fill = NULL # On enlève le titre de la légende
@@ -179,27 +183,24 @@ ggplot(donnees_graph, aes(x = Fermeture, y = Pourcentage, fill = Apprentissage))
   # Thème Minimaliste
   theme_minimal(base_size = 12) +
   theme(
-    
     # Suppression des éléments inutiles
     panel.grid.major.x = element_blank(), # Pas de lignes verticales
     panel.grid.minor = element_blank(),   # Pas de petites lignes
     panel.grid.major.y = element_line(color = "grey90"), # Lignes horizontales très discrètes
     
     # Gestion de la légende
-    legend.position = "top", 
+    legend.position = "bottom", 
     legend.justification = "left",
     legend.margin = margin(t = 0, b = 0),
     
     # Gestion des titres
     plot.title.position = "plot", # Aligne le titre sur l'image entière
     plot.title = element_text(face = "bold", size = 16, color = "#333333"),
-    plot.caption = element_text(hjust=0, color = "#666666" ),
     plot.subtitle = element_text(size = 12, color = "#666666", margin = margin(b = 20)),
     
-    plot.margin = margin(t = 0.5, r = 0.5, b = 1, l = 0.5, "cm"),
     # Gestion des axes
     axis.text.x = element_text(color = "black", margin = margin(t = 5)),
-    axis.text.y = element_text(color = "black")
+    axis.text.y = element_text(color = "grey60")
   )
 ```
 
@@ -215,41 +216,18 @@ test_chi2 <- chisq.test(table(var_final_clean$ST347Q01JA, var_final_clean$ST350Q
 print(test_chi2)
 ```
 
-# ACM
-
+# Boxplots
+## Boxplot de ST016 : satisfaction générale des répondants
 ```{r}
-str(var_final_clean)
+deciles_satisfaction <- quantile(donnees$ST016Q01NA, probs = c(0.1,0.9), na.rm = T)
+boxplot(donnees$ST016Q01NA, main = "Boxplot avec déciles du niveau général de satisfaction", ylab ="note sur 10 sur niveau de satisfaction")
+abline(h = deciles_satisfaction, col = "red", lty = 2, lwd = 0.5) #ajout des déciles en pointillés rouges
+```
+## Boxplot niveau d'implication dans les réponses au questionnaire
+```{r}
+deciles_implication <- quantile(donnees$ST331Q03JA, probs = c(0.1, 0.9), na.rm = T)
+boxplot(donnees$ST331Q03JA, main = "Boxplot avec déciles de l'effort mis dans les réponses au questionnaire", ylab = "évaluation niveau d'implication réponse au questionaire")
+abline(h = deciles_implication, col = "red", lty = 2, lwd = 0.5)
 ```
 
-Variable type num, besoin convertir en type factor pour ACM
 
-```{r}
-cols_a_convertir <- c(1:16) 
-var_final_clean[, cols_a_convertir] <- lapply(var_final_clean[, cols_a_convertir], as.factor)
-```
-
-```{r}
-res.mca <- MCA(var_final_clean, graph = FALSE)
-print(res.mca)
-```
-
-```{r}
-# Visualiser l'éboulis des valeurs propres
-fviz_eig(res.mca, addlabels = TRUE, ylim = c(0, 15))
-```
-
-```{r}
-# Carte des variables (les catégories)
-fviz_mca_var(res.mca, 
-             choice = "mca.cor", # Correlation entre variables et axes
-             repel = TRUE,       # Évite le chevauchement de texte
-             ggtheme = theme_minimal())
-```
-
-```{r}
-fviz_mca_ind(res.mca, 
-             axes = c(1,2),
-             col.ind = "cos2", # Qualité de représentation
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE)
-```
