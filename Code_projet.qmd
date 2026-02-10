@@ -129,6 +129,10 @@ variables_final <- data.frame(ST347Q01JA = donnees$ST347Q01JA, #ordi
 var_final_clean <- na.omit(variables_final)
 ```
 
+```{r}
+var_manquantes <- rowMeans(is.na(variables_final))
+```
+
 # Graphique
 
 ```{r}
